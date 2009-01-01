@@ -153,6 +153,8 @@ namespace Smuxi.Engine
             _IrcClient.OnNickChange     += new NickChangeEventHandler(_OnNickChange);
             _IrcClient.OnOp             += new OpEventHandler(_OnOp);
             _IrcClient.OnDeop           += new DeopEventHandler(_OnDeop);
+            _IrcClient.OnHalfop         += new HalfopEventHandler(_OnHalfop);
+            _IrcClient.OnDehalfop       += new DehalfopEventHandler(_OnDehalfop);
             _IrcClient.OnVoice          += new VoiceEventHandler(_OnVoice);
             _IrcClient.OnDevoice        += new DevoiceEventHandler(_OnDevoice);
             _IrcClient.OnModeChange     += new IrcEventHandler(_OnModeChange);
@@ -548,6 +550,14 @@ namespace Smuxi.Engine
                             CommandDeop(command);
                             handled = true;
                             break;
+                        case "halfop":
+                            CommandHalfop(command);
+                            handled = true;
+                            break;
+                        case "dehalfop":
+                            CommandDehalfop(command);
+                            handled = true;
+                            break;
                         case "voice":
                             CommandVoice(command);
                             handled = true;
@@ -665,6 +675,8 @@ namespace Smuxi.Engine
             "devoice nick",
             "op nick",
             "deop nick",
+            "halfop nick",
+            "dehalfop nick",
             "nick newnick",
             "ctcp destination command [data]",
             "raw/quote irc-command",
@@ -1023,6 +1035,8 @@ namespace Smuxi.Engine
                     mode = _("IRC Op");
                 } else if (info.IsOp) {
                     mode = _("Op");
+                } else if (info.IsHalfop) {
+                    mode = _("Halfop");
                 } else if (info.IsVoice) {
                     mode = _("Voice");
                 } else {
@@ -1112,6 +1126,46 @@ namespace Smuxi.Engine
                 foreach(string nick in candidates) {
                     _IrcClient.Deop(channel, nick);
                 }
+            } else {
+                _NotEnoughParameters(cd);
+            }
+        }
+
+        public void CommandHalfop(CommandModel cd)
+        {
+            ChatModel chat = cd.FrontendManager.CurrentChat;
+            string channel = chat.ID,
+            if (cd.DataArray.Length == 2) {
+                _IrcClient.Halfop(channel, cd.Parameter);
+            } else if (cd.DataArray.Length > 2) {
+                string[] candidates = cd.Parameter.TrimEnd().Split(new char[] {' '});
+                foreach (string nick in candidates) {
+                    _IrcClient.Halfop(channel, nick);
+                }
+                /*
+                // requires SmartIrc4net >= 0.4.6
+                _IrcClient.Halfop(channel, candidates);
+                */
+            } else {
+                _NotEnoughParameters(cd);
+            }
+        }
+
+        public void CommandDehalfop(CommandModel cd)
+        {
+            ChatModel chat = cd.FrontendManager.CurrentChat;
+            string channel = chat.ID,
+            if (cd.DataArray.Length == 2) {
+                _IrcClient.Dehalfop(channel, cd.Parameter);
+            } else if (cd.DataArray.Length > 2) {
+                string[] candidates = cd.Parameter.TrimEnd().Split(new char[] {' '});
+                foreach (string nick in candidates) {
+                    _IrcClient.Dehalfop(channel, nick);
+                }
+                /*
+                // requires SmartIrc4net >= 0.4.6
+                _IrcClient.Dehalfop(channel, candidates);
+                */
             } else {
                 _NotEnoughParameters(cd);
             }
@@ -2471,6 +2525,34 @@ namespace Smuxi.Engine
             }
         }
         
+        private void _OnHalfop(object sender, HalfopEventArgs e)
+        {
+            GroupChatModel cchat = (GroupChatModel)GetChat(e.Channel, ChatType.Group);
+            IrcGroupPersonModel user = (IrcGroupPersonModel)cchat.GetPerson(e.Whom);
+            if (user != null) {
+                user.IsHalfop = true;
+                Session.UpdatePersonInGroupChat(cchat, user, user);
+#if LOG4NET
+            } else {
+                _Logger.Error("_OnHalfop(): cchat.GetPerson(e.Whom) returned null! cchat.Name: "+cchat.Name+" e.Whom: "e.Whom);
+#endif
+            }
+        }
+
+        private void _OnDehalfop(object sender, DehalfopEventArgs e)
+        {
+            GroupChatModel cchat = (GroupChatModel)GetChat(e.Channel, ChatType.Group);
+            IrcGroupPersonModel user = (IrcGroupPersonModel)cchat.GetPerson(e.Whom);
+            if (user != null) {
+                user.IsHalfop = false;
+                Session.UpdatePersonInGroupChat(cchat, user, user);
+#if LOG4NET
+            } else {
+                _Logger.Error("_OnDehalfop(): cchat.GetPerson(e.Whom) returned null! cchat.Name: "+cchat.Name+" e.Whom: "e.Whom);
+#endif
+            }
+        }
+
         private void _OnVoice(object sender, VoiceEventArgs e)
         {
             GroupChatModel cchat = (GroupChatModel)GetChat(e.Channel, ChatType.Group);

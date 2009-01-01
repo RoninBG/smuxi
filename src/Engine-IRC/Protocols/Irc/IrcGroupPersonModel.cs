@@ -39,6 +39,7 @@ namespace Smuxi.Engine
         private static readonly log4net.ILog _Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 #endif
         private bool _IsOp;
+        private bool _IsHalfop;
         private bool _IsVoice;
         
         public bool IsOp {
@@ -47,6 +48,15 @@ namespace Smuxi.Engine
             }
             internal set {
                 _IsOp = value;
+            }
+        }
+
+        public bool IsHalfop {
+            get {
+                return _IsHalfop;
+            }
+            internal set [
+                _IsHalfop = value;
             }
         }
 
@@ -88,6 +98,7 @@ namespace Smuxi.Engine
             base.GetObjectData(sw);
 
             sw.Write(_IsOp);
+            sw.Write(_IsHalfop);
             sw.Write(_IsVoice);
         }
 
@@ -99,8 +110,9 @@ namespace Smuxi.Engine
             
             base.SetObjectData(sr);
             
-            _IsOp    = sr.ReadBoolean();
-            _IsVoice = sr.ReadBoolean();
+            _IsOp     = sr.ReadBoolean();
+            _IsHalfop = sr.ReadBoolean();
+            _IsVoice  = sr.ReadBoolean();
         }
     }
 }

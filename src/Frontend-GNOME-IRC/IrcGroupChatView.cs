@@ -60,6 +60,14 @@ namespace Smuxi.Frontend.Gnome
                 deop_item.Activated += new EventHandler(_OnUserListMenuDeopActivated);
                 PersonMenu.Append(deop_item);
                 
+                Gtk.ImageMenuItem halfop_item = new Gtk.ImageMenuItem(_("Halfop"));
+                halfop_item.Activated += new EventHandler(_OnUserListMenuHalfopActivated);
+                PersonMenu.Append(halfop_item);
+                
+                Gtk.ImageMenuItem dehalfop_item = new Gtk.ImageMenuItem(_("Dehalfop"));
+                dehalfop_item.Activated += new EventHandler(_OnUserListMenuDehalfopActivated);
+                PersonMenu.Append(dehalfop_item);
+                
                 Gtk.ImageMenuItem voice_item = new Gtk.ImageMenuItem(_("Voice"));
                 voice_item.Activated += new EventHandler(_OnUserListMenuVoiceActivated);
                 PersonMenu.Append(voice_item);
@@ -135,6 +143,8 @@ namespace Smuxi.Frontend.Gnome
             string mode;
             if (person.IsOp) {
                 mode = "@";
+            } else if (person.IsHalfop) {
+                mode = "%";
             } else if (person.IsVoice) {
                 mode = "+";
             } else {
@@ -189,6 +199,52 @@ namespace Smuxi.Frontend.Gnome
             );
         }
         
+        private void _OnUserListMenuHalfopActivated(object sender, EventArgs e)
+        {
+            Trace.Call(sender, e);
+            
+            IList<PersonModel> persons = GetSelectedPersons();
+            if (persons == null) {
+                return;
+            }
+
+            // do smart mode changes
+            List<string> nicks = new List<string>(); 
+            foreach (PersonModel person in persons) {
+                nicks.Add(person.ID);
+            }
+            _IrcProtocolManager.CommandHalfop(
+                new CommandModel(
+                    Frontend.FrontendManager,
+                    ChatModel,
+                    String.Join(" ", nicks.ToArray())
+                )
+            );
+        } 
+        
+        private void _OnUserListMenuDehalfopActivated(object sender, EventArgs e)
+        {
+            Trace.Call(sender, e);
+            
+            IList<PersonModel> persons = GetSelectedPersons();
+            if (persons == null) {
+                return;
+            }
+
+            // do smart mode changes
+            List<string> nicks = new List<string>(); 
+            foreach (PersonModel person in persons) {
+                nicks.Add(person.ID);
+            }
+            _IrcProtocolManager.CommandDehalfop(
+                new CommandModel(
+                    Frontend.FrontendManager,
+                    ChatModel,
+                    String.Join(" ", nicks.ToArray())
+                )
+            );
+        }
+
         private void _OnUserListMenuVoiceActivated(object sender, EventArgs e)
         {
             Trace.Call(sender, e);
