@@ -239,6 +239,7 @@ namespace Smuxi.Engine
             
             prefix = "Engine/Users/DEFAULT/Connection/";
             Get(prefix+"Encoding", String.Empty);
+            Get(prefix+"UseIPv6", false);
             
             prefix = "Engine/Users/DEFAULT/Servers/";
             Get(prefix + "Servers", new string[] {

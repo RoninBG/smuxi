@@ -4,7 +4,7 @@
     <images-root-path>..</images-root-path>
     <target-gtk-version>2.12.1</target-gtk-version>
   </configuration>
-  <widget class="Gtk.Dialog" id="Smuxi.Frontend.Gnome.SteticPreferencesDialog" design-size="524 579">
+  <widget class="Gtk.Dialog" id="Smuxi.Frontend.Gnome.SteticPreferencesDialog" design-size="524 622">
     <property name="MemberName" />
     <property name="Title" translatable="yes">smuxi - Preferences</property>
     <property name="TypeHint">Dialog</property>
@@ -268,6 +268,30 @@
                             <property name="XShrink">False</property>
                             <property name="YExpand">False</property>
                             <property name="YFill">False</property>
+                            <property name="YShrink">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="Gtk.CheckButton" id="UseIPv6CheckButton">
+                            <property name="MemberName" />
+                            <property name="CanFocus">True</property>
+                            <property name="Label" translatable="yes">Use an IPv6 connection</property>
+                            <property name="DrawIndicator">True</property>
+                            <property name="HasLabel">True</property>
+                            <property name="UseUnderline">True</property>
+                          </widget>
+                          <packing>
+                            <property name="TopAttach">4</property>
+                            <property name="BottomAttach">6</property>
+                            <property name="RightAttach">2</property>
+                            <property name="AutoSize">True</property>
+                            <property name="XOptions">Fill</property>
+                            <property name="YOptions">Fill</property>
+                            <property name="XExpand">False</property>
+                            <property name="XFill">True</property>
+                            <property name="XShrink">False</property>
+                            <property name="YExpand">False</property>
+                            <property name="YFill">True</property>
                             <property name="YShrink">False</property>
                           </packing>
                         </child>

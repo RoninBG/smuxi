@@ -81,6 +81,21 @@
                           </packing>
                         </child>
                         <child>
+                          <widget class="GtkCheckButton" id="UseIPv6CheckButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                            <property name="label" translatable="yes">Use an IPv6 connection</property>
+                            <property name="response_id">0</property>
+                            <property name="draw_indicator">True</property>
+                          </widget>
+                          <packing>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">4</property>
+                            <property name="bottom_attach">5</property>
+                          </packing>
+                        </child>
+                        <child>
                           <widget class="GtkEntry" id="ConnectionRealnameEntry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>

@@ -115,7 +115,8 @@ namespace Smuxi.Frontend.Gnome
             ((Gtk.Button)_Glade["OKButton"]).Clicked += new EventHandler(_OnOKButtonClicked);
             ((Gtk.Button)_Glade["ApplyButton"]).Clicked += new EventHandler(_OnApplyButtonClicked);
             ((Gtk.Button)_Glade["CancelButton"]).Clicked += new EventHandler(_OnCancelButtonClicked);
-            
+
+            ((Gtk.CheckButton)_Glade["UseIPv6CheckButton"]).Toggled += _OnChanged;
             ((Gtk.TextView)_Glade["OnConnectCommandsTextView"]).Buffer.Changed += new EventHandler(_OnChanged);
             ((Gtk.TextView)_Glade["OnStartupCommandsTextView"]).Buffer.Changed += new EventHandler(_OnChanged);
             
@@ -199,6 +200,8 @@ namespace Smuxi.Frontend.Gnome
             ((Gtk.Entry)_Glade["ConnectionRealnameEntry"]).Text  = (string)Frontend.UserConfig["Connection/Realname"];
             string connect_commands = String.Join("\n", (string[])Frontend.UserConfig["Connection/OnConnectCommands"]);
             ((Gtk.TextView)_Glade["OnConnectCommandsTextView"]).Buffer.Text = connect_commands;
+            
+            ((Gtk.CheckButton)_Glade["UseIPv6CheckButton"]).Active = (bool)Frontend.UserConfig["Connection/UseIPv6"];
             
             string encoding = (string)Frontend.UserConfig["Connection/Encoding"];
             encoding = encoding.ToUpper();
@@ -470,7 +473,9 @@ namespace Smuxi.Frontend.Gnome
             cb.GetActiveIter(out iter);
             string bodyName = (string) cb.Model.GetValue(iter, 1);
             Frontend.UserConfig["Connection/Encoding"] = bodyName;
-            
+
+            Frontend.UserConfig["Connection/UseIPv6"] = ((Gtk.CheckButton)_Glade["UseIPv6CheckButton"]).Active;
+
             // Interface
             Frontend.UserConfig["Interface/Notebook/TimestampFormat"] =
                 ((Gtk.Entry)_Glade["TimestampFormatEntry"]).Text;

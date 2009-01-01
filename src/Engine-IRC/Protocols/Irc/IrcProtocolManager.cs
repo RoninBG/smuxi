@@ -67,6 +67,7 @@ namespace Smuxi.Engine
         private TimeSpan        _LastLag;
         private Thread          _RunThread;
         private Thread          _LagWatcherThread;
+        private bool            _UseIPv6;
         
         public override bool IsConnected {
             get {
@@ -113,6 +114,15 @@ namespace Smuxi.Engine
         public override ChatModel Chat {
             get {
                 return _NetworkChat;
+            }
+        }
+
+        public bool UseIPv6 {
+            get {
+                return _UseIPv6;
+            }
+            set {
+                _UseIPv6 = Convert.ToBoolean(value);
             }
         }
 
@@ -181,6 +191,12 @@ namespace Smuxi.Engine
             } else {
                 _IrcClient.Encoding = Encoding.Default;
             }
+
+            try {
+                _IrcClient.UseIPv6 = (bool) Session.UserConfig["Connection/UseIPv6"];
+            } catch (Exception ex) {
+                _IrcClient.UseIPv6 = false;
+            }
         }
         
         public override string ToString()
@@ -214,10 +230,11 @@ namespace Smuxi.Engine
             Trace.Call(fm, server, port, user, pass);
             
             string[] nicks = (string[]) Session.UserConfig["Connection/Nicknames"];
-            Connect(fm, server, port, nicks, user, pass);
+            bool     ipv6  = Convert.ToBoolean(Session.UserConfig["Connection/UseIPv6"]);
+            Connect(fm, server, port, nicks, user, pass, ipv6);
         }
         
-        public void Connect(FrontendManager fm, string server, int port, string[] nicks, string user, string pass)
+        public void Connect(FrontendManager fm, string server, int port, string[] nicks, string user, string pass, bool ipv6)
         {
             Trace.Call(fm, server, port, nicks, user, pass);
             
@@ -227,6 +244,7 @@ namespace Smuxi.Engine
             _Nicknames = nicks;
             _Username = user;
             _Password = pass;
+            _UseIPv6 = ipv6;
 
             // add fallbacks if only one nick was specified, else we get random
             // number nicks when nick collisions happen
@@ -716,8 +734,9 @@ namespace Smuxi.Engine
             }
             
             string username = (string)Session.UserConfig["Connection/Username"];
+            bool ipv6 = Convert.ToBoolean(Session.UserConfig["Connection/UseIPv6"]);
             
-            Connect(fm, server, port, nicks, username, pass);
+            Connect(fm, server, port, nicks, username, pass, ipv6);
         }
         
         public void CommandSay(CommandModel cd)

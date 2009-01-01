@@ -53,6 +53,8 @@ namespace Smuxi.Frontend.Gnome {
         
         private Gtk.Label label58;
         
+        private Gtk.CheckButton UseIPv6CheckButton;
+        
         private Gtk.VBox vbox2;
         
         private Gtk.VBox vbox3;
