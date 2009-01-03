@@ -765,7 +765,7 @@ namespace Smuxi.Frontend.Gnome
             Close();
         }
         
-        private static string _(string msg)
+        public static string _(string msg)
         {
             return Mono.Unix.Catalog.GetString(msg);
         }
