@@ -93,6 +93,23 @@ namespace Smuxi.Frontend.Gnome
                 Gtk.ImageMenuItem whois_item = new Gtk.ImageMenuItem(_("Whois"));
                 whois_item.Activated += _OnUserListMenuWhoisActivated;
                 PersonMenu.Append(whois_item);
+
+                Gtk.ImageMenuItem ctcp_item = new Gtk.ImageMenuItem(_("CTCP"));
+                Gtk.Menu ctcp_submenu = new Gtk.Menu();
+                Gtk.ImageMenuItem ctcp_version_item = new Gtk.ImageMenuItem(_("Version"));
+                ctcp_version_item.Activated += _OnUserListMenuCTCPVersionActivated;
+                ctcp_submenu.Append(ctcp_version_item);
+
+                Gtk.ImageMenuItem ctcp_ping_item = new Gtk.ImageMenuItem(_("Ping"));
+                ctcp_ping_item.Activated += _OnUserListMenuCTCPPingActivated;
+                ctcp_submenu.Append(ctcp_ping_item);
+
+                Gtk.ImageMenuItem ctcp_time_item = new Gtk.ImageMenuItem(_("Time"));
+                ctcp_time_item.Activated += _OnUserListMenuCTCPTimeActivated;
+                ctcp_submenu.Append(ctcp_time_item);
+
+                ctcp_item.Submenu = ctcp_submenu;
+                PersonMenu.Append(ctcp_item);
             }
             
             if (PersonTreeView != null) {
@@ -360,6 +377,66 @@ namespace Smuxi.Frontend.Gnome
             }
         }
         
+        private void _OnUserListMenuCTCPVersionActivated(object sender, EventArgs e)
+        {
+            Trace.Call(sender, e);
+
+            IList<PersonModel> persons = GetSelectedPersons();
+            if (persons == null) {
+                return;
+            }
+
+            foreach (PersonModel person in persons) {
+                _IrcProtocolManager.CommandVersion(
+                    new CommandModel(
+                        Frontend.FrontendManager,
+                        ChatModel,
+                        person.ID
+                    )
+                );
+            }
+        }
+
+        private void _OnUserListMenuCTCPPingActivated(object sender, EventArgs e)
+        {
+            Trace.Call(sender, e);
+
+            IList<PersonModel> persons = GetSelectedPersons();
+            if (persons == null) {
+                return;
+            }
+
+            foreach (PersonModel person in persons) {
+                _IrcProtocolManager.CommandPing(
+                    new CommandModel(
+                        Frontend.FrontendManager,
+                        ChatModel,
+                        person.ID
+                    )
+                );
+            }
+        }
+
+        private void _OnUserListMenuCTCPTimeActivated(object sender, EventArgs e)
+        {
+            Trace.Call(sender, e);
+
+            IList<PersonModel> persons = GetSelectedPersons();
+            if (persons == null) {
+                return;
+            }
+
+            foreach (PersonModel person in persons) {
+                _IrcProtocolManager.CommandTime(
+                    new CommandModel(
+                        Frontend.FrontendManager,
+                        ChatModel,
+                        person.ID
+                    )
+                );
+            }
+        }
+
         protected override void OnPersonsRowActivated(object sender, Gtk.RowActivatedArgs e)
         {
             Trace.Call(sender, e);

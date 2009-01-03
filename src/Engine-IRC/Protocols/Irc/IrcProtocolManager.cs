@@ -485,6 +485,14 @@ namespace Smuxi.Engine
                             CommandPing(command);
                             handled = true;
                             break;
+                        case "version":
+                            CommandVersion(command);
+                            handled = true;
+                            break;
+                        case "time":
+                            CommandTime(command);
+                            handled = true;
+                            break;
                         case "who":
                             CommandWho(command);
                             handled = true;
@@ -655,6 +663,8 @@ namespace Smuxi.Engine
             "whois nick",
             "whowas nick",
             "ping nick",
+            "version nick",
+            "time nick",
             "mode new-mode",
             "away [away-message]",
             "kick nick(s) [reason]",
@@ -1008,6 +1018,28 @@ namespace Smuxi.Engine
             }
         }
         
+        public void CommandVersion(CommandModel cd)
+        {
+            if (cd.DataArray.Length >= 2) {
+                string destination = cd.DataArray[1];
+                Session.AddTextToChat(_NetworkChat, "[ctcp(" + destination + ")] VERSION");
+                _IrcClient.SendMessage(SendType.CtcpRequest, destination, "VERSION");
+            } else {
+                _NotEnoughParameters(cd);
+            }
+        }
+
+        public void CommandTime(CommandModel cd)
+        {
+            if (cd.DataArray.Length >= 2) {
+                string destination = cd.DataArray[1];
+                Session.AddTextToChat(_NetworkChat, "[ctcp(" + destination + ")] TIME");
+                _IrcClient.SendMessage(SendType.CtcpRequest, destination, "TIME");
+            } else {
+                _NotEnoughParameters(cd);
+            }
+        }
+
         public void CommandWho(CommandModel cd)
         {
             if (cd.DataArray.Length < 2) {
